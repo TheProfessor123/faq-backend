@@ -4,19 +4,7 @@ import express from 'express';
 const router = express.Router();
 import FAQ from '../models/FAQ.js';
 import { translate } from '@vitalets/google-translate-api';
-import { createClient } from 'redis';
-
-const redisClient = createClient({
-  username: process.env.REDIS_USERNAME,
-  password: process.env.REDIS_PASSWORD,
-  socket: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
-  }
-});
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-await redisClient.connect();
+import redisClient from '../redisClient.js';
 
 router.post('/', async (req, res) => {
   const { question, answer, lang } = req.body;

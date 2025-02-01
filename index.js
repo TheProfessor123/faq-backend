@@ -2,25 +2,15 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
-import { createClient } from 'redis';
-import faqRoutes from './routes/faqs.js';
 import cors from 'cors';
+import faqRoutes from './routes/faqs.js';
+import redisClient from './redisClient.js';
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 mongoose.set('strictQuery', false);
-
-const redisClient = createClient({
-  username: process.env.REDIS_USERNAME,
-  password: process.env.REDIS_PASSWORD,
-  socket: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
-  }
-});
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
 const startServer = async () => {
   try {
@@ -30,7 +20,6 @@ const startServer = async () => {
     });
     console.log('Connected to MongoDB');
 
-    await redisClient.connect();
     console.log('Connected to Redis');
 
     app.use('/api/faqs', faqRoutes);
